@@ -4,6 +4,7 @@ import "./globals.css";
 import { QueryClient} from "@tanstack/react-query";
 import { WagmiProvider } from "@/services/WagmiProvider";
 import { Navbar } from "@/components/common/Navbar";
+import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,8 +33,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}
       >
         <WagmiProvider>
-          <Navbar/>
-          {children}
+          <BackgroundBeamsWithCollision>
+            <Navbar/>
+            {children}
+          </BackgroundBeamsWithCollision>
         </WagmiProvider>
       </body>
     </html>
