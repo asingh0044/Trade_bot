@@ -36,7 +36,6 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
         res = data.filter(
           (item) => item.from.toLowerCase() === address?.toLowerCase()
         );
-        console.log(filterOption);
         break;
       case 2:
         res = data.filter(
@@ -104,7 +103,14 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
                     <TableCell className="font-medium text-center">
                       {transaction.blockNumber}
                     </TableCell>
-                    <TableCell>{transaction.hash}</TableCell>
+                    <TableCell>
+                      <a
+                        target="_blank"
+                        href={`https://sepolia.etherscan.io/tx/${transaction.hash}`}
+                      >
+                        {transaction.hash}
+                      </a>
+                    </TableCell>
                     <TableCell>
                       {Number(utils.formatEther(transaction.value)).toFixed(3)}{" "}
                       ETH

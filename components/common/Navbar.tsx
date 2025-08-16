@@ -34,14 +34,19 @@ export const Navbar = () => {
   return (
     <div className=" py-2 md:py-4 lg:py-6 border-b-[0.5px] border-white">
       <div className="w-11/12 lg:w-3/4 mx-auto flex justify-between items-center">
-        <div className="uppercase font-semibold lg:font-extrabold text-sm md:text-xl lg:text-4xl text-white">
+        <Link
+          href="/"
+          className="uppercase font-semibold lg:font-extrabold text-sm md:text-xl lg:text-4xl text-white"
+        >
           Trade Bot
-        </div>
+        </Link>
 
         <div className="flex w-fit items-center gap-x-5">
-          <Link href="" className="text-white uppercase">
-            <div className="text-sm">Send</div>
-          </Link>
+          {isConnected && (
+            <Link href="/send" className="text-white uppercase">
+              <div className="text-sm">Send</div>
+            </Link>
+          )}
           {!isConnected ? (
             <button
               onClick={connectHandler}
@@ -63,8 +68,14 @@ export const Navbar = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent>
                   <DropdownMenuItem>
-                    <button className="cursor-pointer flex items-center gap-x-3" onClick={()=>disconnect()}>
-                      <span><LogOut  size={10}/></span> Disconnect
+                    <button
+                      className="cursor-pointer flex items-center gap-x-3"
+                      onClick={() => disconnect()}
+                    >
+                      <span>
+                        <LogOut size={10} />
+                      </span>{" "}
+                      Disconnect
                     </button>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
