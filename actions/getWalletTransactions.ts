@@ -11,7 +11,6 @@ export const getWalletTransactions = async (
       throw new Error("error in fetching wallet transactions");
     }
     const data = await response.json();
-    console.log("data", data);
     return data.result;
   } catch (error) {
     throw error;
