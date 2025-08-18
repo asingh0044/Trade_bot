@@ -10,11 +10,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
   const { connectors, connect } = useConnect();
   const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const router = useRouter();
   const connectHandler = () => {
     const metamaskConnector = connectors.find(
       (connector) =>
@@ -47,6 +49,11 @@ export const Navbar = () => {
               <div className="text-sm">Send</div>
             </Link>
           )}
+          {isConnected && (
+            <Link href="/sendTokens" className="text-white uppercase">
+              <div className="text-sm">Send Tokens</div>
+            </Link>
+          )}
           {!isConnected ? (
             <button
               onClick={connectHandler}
@@ -70,7 +77,10 @@ export const Navbar = () => {
                   <DropdownMenuItem>
                     <button
                       className="cursor-pointer flex items-center gap-x-3"
-                      onClick={() => disconnect()}
+                      onClick={() => {
+                        disconnect();
+                        router.push("/");
+                      }}
                     >
                       <span>
                         <LogOut size={10} />

@@ -24,3 +24,10 @@ export type Transaction = {
 export type TransactionTableProps = {
   data: Transaction[];
 };
+
+export type TokenType = {
+  contractAddress: string;
+  tokenBalance: string;
+  name: string | null;
+  symbol: string | null;
+};

@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import { ethers } from "ethers";
 import { twMerge } from "tailwind-merge";
 
 export const trimAddress = (addr?: string) => {
@@ -8,4 +9,8 @@ export const trimAddress = (addr?: string) => {
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+export function formatTokenBalance(tokenBalanceHex: string, decimals: number) {
+  const balanceBN = ethers.BigNumber.from(tokenBalanceHex);
+  return ethers.utils.formatUnits(balanceBN, decimals);
 }

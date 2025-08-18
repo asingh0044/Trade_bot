@@ -4,7 +4,6 @@ import { SepoliaTable } from "@/components/home/SepoliaTable";
 import { TransactionTable } from "@/components/home/TransactionTable";
 import { useSepoliaTransactions } from "@/hooks/useSepoliaTransactions";
 import { useWalletAddress } from "@/hooks/useWalletAddress";
-import { Transaction } from "@/lib/types/transaction";
 import React from "react";
 import { useAccount, useBalance , } from "wagmi";
 
