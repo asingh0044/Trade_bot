@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { QueryClient} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import { WagmiProvider } from "@/services/WagmiProvider";
 import { Navbar } from "@/components/common/Navbar";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
+import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
+import "@rainbow-me/rainbowkit/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,10 +35,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bgGradient`}
       >
         <WagmiProvider>
-          <BackgroundBeamsWithCollision>
-            <Navbar/>
-            {children}
-          </BackgroundBeamsWithCollision>
+          <RainbowKitProvider modalSize="compact">
+            <BackgroundBeamsWithCollision>
+              <Navbar />
+              {children}
+            </BackgroundBeamsWithCollision>
+          </RainbowKitProvider>
         </WagmiProvider>
       </body>
     </html>

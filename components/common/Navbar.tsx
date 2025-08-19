@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { useRouter } from "next/navigation";
+import { Connect } from "../home/Connect";
 
 export const Navbar = () => {
   const { connectors, connect } = useConnect();
@@ -55,12 +56,13 @@ export const Navbar = () => {
             </Link>
           )}
           {!isConnected ? (
-            <button
-              onClick={connectHandler}
-              className="px-4 py-2 rounded-full uppercase text-sm bg-white text-black font-semibold cursor-pointer"
-            >
-              Connect
-            </button>
+            // <button
+            //   onClick={connectHandler}
+            //   className="px-4 py-2 rounded-full uppercase text-sm bg-white text-black font-semibold cursor-pointer"
+            // >
+            //   Connect
+            // </button>
+            <Connect/>
           ) : (
             <div className="flex items-center w-fit gap-x-2">
               <div className="text-white text-sm font-semibold">
