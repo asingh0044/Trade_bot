@@ -21,15 +21,14 @@ const connectors = connectorsForWallets(
       wallets: [coinbaseWallet, walletConnectWallet],
     },
   ],
-  { appName: "RainbowKit App", projectId: "YOUR_PROJECT_ID" }
+  { appName: "RainbowKit App", projectId: projectId }
 );
 
 export const config = createConfig({
-  chains: [mainnet, base, sepolia],
+  chains: [sepolia],
   connectors:connectors,
+  ssr:true,
   transports: {
-    [mainnet.id]: http(),
-    [base.id]: http(),
     [sepolia.id]: http(),
   },
 });

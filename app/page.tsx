@@ -4,14 +4,29 @@ import { SepoliaTable } from "@/components/home/SepoliaTable";
 import { TransactionTable } from "@/components/home/TransactionTable";
 import { useSepoliaTransactions } from "@/hooks/useSepoliaTransactions";
 import { useWalletAddress } from "@/hooks/useWalletAddress";
-import React from "react";
-import { useAccount, useBalance , } from "wagmi";
+import { ethers } from "ethers";
+import React, { useEffect } from "react";
+import { useAccount, useBalance } from "wagmi";
 
 const Page = () => {
   const { address } = useAccount();
-  const { data: walletBalance } = useBalance({
+  const { data: walletBalance, refetch } = useBalance({
     address: address,
   });
+  useEffect(() => {
+    if (!window.ethereum) return;
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    const onNewBlock = (blockNumber:number) => {
+      refetch();
+    };
+
+    provider.on("block", onNewBlock);
+
+    return () => {
+      provider.off("block", onNewBlock);
+    };
+  }, [refetch]);
   const { data: walletTransactions } = useWalletAddress(address || "");
   const { data: sepoliaTxns, isLoading } = useSepoliaTransactions();
   return (
@@ -22,7 +37,7 @@ const Page = () => {
         </div>
       )}
       {address && (
-        <div className="mt-4">
+        <div className="mt-4 mb-8 lg:mb-20">
           <TransactionTable data={walletTransactions!} />
         </div>
       )}{" "}
@@ -33,7 +48,7 @@ const Page = () => {
               <Loader />
             </div>
           ) : (
-            <div>
+            <div className="mt-4 mb-8 lg:mb-20">
               <SepoliaTable data={sepoliaTxns!} />
             </div>
           )}

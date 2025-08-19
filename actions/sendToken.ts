@@ -1,6 +1,10 @@
 import { ethers } from "ethers";
 
-export const sendTokens= async(tokenAddress:string, toAddress:string, amount:string) =>{
+export const sendTokens = async (
+  tokenAddress: string,
+  toAddress: string,
+  amount: string
+) => {
   const provider = new ethers.providers.Web3Provider(window.ethereum);
   const signer = provider.getSigner();
 
@@ -13,9 +17,10 @@ export const sendTokens= async(tokenAddress:string, toAddress:string, amount:str
 
   try {
     const tx = await tokenContract.transfer(toAddress, numberOfTokens);
-    await tx.wait();
-    return await tx.json();
+    const receipt = await tx.wait();
+    return receipt;
   } catch (error) {
     console.error("Error sending tokens:", error);
+    throw error;
   }
-}
+};

@@ -23,8 +23,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import { TokenType } from "@/lib/types/transaction";
 import { useSendToken } from "@/hooks/useSendToken";
+import { error } from "console";
 
 const Page = () => {
   const [tokenIndex, setTokenIndex] = useState<number>(-1);
@@ -42,9 +42,8 @@ const Page = () => {
     },
   });
   const mutation = useSendToken();
-
-  function onSubmit(values: z.infer<typeof tokenFormSchema>) {
-    const res = mutation.mutate(
+  async function onSubmit(values: z.infer<typeof tokenFormSchema>) {
+    const res = await mutation.mutateAsync(
       {
         tokenAddress: values.contractAddress,
         toAddress: values.address,
@@ -54,6 +53,7 @@ const Page = () => {
         onSuccess: () => {
           refetch();
           form.reset();
+          setTokenIndex(-1);
         },
       }
     );
@@ -152,13 +152,15 @@ const Page = () => {
           >
             {mutation.isPending ? "Loading..." : "Send"}
           </Button>
-          {mutation.isSuccess && (
+          {mutation.isSuccess && !mutation.isError && (
             <div className="mt-2 text-sm text-green-500">
               Transaction successful.
             </div>
           )}
           {mutation.isError && (
-            <div className="mt-2 text-sm text-red-500">Transaction failed.</div>
+            <div className="mt-2 text-sm text-red-500">
+              Transaction failed.
+            </div>
           )}
         </form>
       </Form>
