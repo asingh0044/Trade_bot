@@ -7,6 +7,7 @@ import { Navbar } from "@/components/common/Navbar";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,6 +40,7 @@ export default function RootLayout({
             <BackgroundBeamsWithCollision>
               <Navbar />
               {children}
+              <Toaster/>
             </BackgroundBeamsWithCollision>
           </RainbowKitProvider>
         </WagmiProvider>

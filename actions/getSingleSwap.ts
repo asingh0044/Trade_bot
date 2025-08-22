@@ -44,6 +44,7 @@ export const getSingleSwap = async (CurrentConfig: SwapExactInSingle) => {
       txOptions
     );
     const receipt = await tx.wait();
+    return receipt;
   } catch (error: any) {
     throw error;
   }
