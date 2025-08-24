@@ -24,7 +24,6 @@ import {
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useSendToken } from "@/hooks/useSendToken";
-import { error } from "console";
 
 const Page = () => {
   const [tokenIndex, setTokenIndex] = useState<number>(-1);
@@ -82,18 +81,16 @@ const Page = () => {
                     <DropdownMenuContent>
                       {data?.map((item, index) => (
                         <DropdownMenuItem key={item.contractAddress}>
-                          {item.symbol !== "WETH" && (
-                            <button
-                              type="button"
-                              onClick={() => {
-                                setTokenIndex(index);
-                                field.onChange(item.contractAddress);
-                              }}
-                              className="cursor-pointer flex items-center gap-x-3"
-                            >
-                              {item.name}
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTokenIndex(index);
+                              field.onChange(item.contractAddress);
+                            }}
+                            className="cursor-pointer flex items-center gap-x-3"
+                          >
+                            {item.name}
+                          </button>
                         </DropdownMenuItem>
                       ))}
                     </DropdownMenuContent>
@@ -158,9 +155,7 @@ const Page = () => {
             </div>
           )}
           {mutation.isError && (
-            <div className="mt-2 text-sm text-red-500">
-              Transaction failed.
-            </div>
+            <div className="mt-2 text-sm text-red-500">Transaction failed.</div>
           )}
         </form>
       </Form>

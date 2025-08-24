@@ -3,7 +3,12 @@ import { Loader2 } from "@/components/common/Loader";
 import { Button } from "@/components/ui/button";
 import { useGetQuote } from "@/hooks/useGetQuote";
 import { useGetSwap } from "@/hooks/useGetSwap";
-import { SEPOLIA_CHAINID, USDC_ADDRESS } from "@/lib/constant";
+import {
+  ETH_TOKEN,
+  SEPOLIA_CHAINID,
+  USDC_ADDRESS,
+  USDC_TOKEN,
+} from "@/lib/constant";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
 import { SwapExactInSingle } from "@uniswap/v4-sdk";
 import { formatUnits } from "ethers/lib/utils";
@@ -30,13 +35,14 @@ const Page = () => {
     chainId: SEPOLIA_CHAINID,
   });
   const usdcBalance = data ? formatUnits(data as bigint, 6) : "0";
-  const { data: quoteData, refetch } = useGetQuote(config);
+  const { data: quoteData, refetch } = useGetQuote(config,ETH_TOKEN);
   if (address && asset1) {
   }
   useEffect(() => {
     setLoading(true);
+    //todo: debouncing
     if (asset1) {
-      const config = getUniswapConfig(asset1);
+      const config = getUniswapConfig(USDC_TOKEN, ETH_TOKEN, asset1);
       setConfig(config!);
       refetch();
     }
@@ -76,18 +82,18 @@ const Page = () => {
             </div>
 
             <div className="">
-              <div className="font-semibold text-2xl text-right">
-                {walletBalance?.symbol}
-              </div>
-              <div
-                className={`text-right ${
-                  Number(asset1) > Number(walletBalance?.formatted)
-                    ? "text-red-500"
-                    : "text-gray-500"
-                }`}
-              >
-                {Number(walletBalance?.formatted).toFixed(6)}
-              </div>
+              <div className="font-semibold text-2xl text-right">USDC</div>
+              {usdcBalance && (
+                <div
+                  className={`text-right ${
+                    Number(asset1) > Number(usdcBalance)
+                      ? "text-red-500"
+                      : "text-gray-500"
+                  }`}
+                >
+                  {usdcBalance}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -112,23 +118,19 @@ const Page = () => {
                         value={""}
                       />
                     ) : (
-                      <input
-                        disabled
-                        type="text"
+                      <div
                         className=" outline-none border-0 text-6xl font-bold "
-                        value={quoteData || ""}
-                      />
+                      >{Number(quoteData).toFixed(6) || ""}</div>
                     )}
                   </>
                 )}
               </>
             </div>
-
             <div className="">
-              <div className="font-semibold text-2xl text-right">USDC</div>
-              {usdcBalance && (
-                <div className="text-right text-gray-500">{usdcBalance}</div>
-              )}
+              <div className="font-semibold text-2xl text-right">
+                {walletBalance?.symbol}
+              </div>
+              <div>{Number(walletBalance?.formatted).toFixed(6)}</div>
             </div>
           </div>
         </div>

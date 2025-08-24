@@ -37,7 +37,6 @@ export async function getWalletTokens(address: `0x${string}`) {
 
     return tokensWithMeta;
   } catch (error) {
-    console.error("Failed to fetch tokens, error:", error);
     throw new Error(error?.message);
   }
 }

@@ -1,3 +1,4 @@
+import { getSigner } from "@/services/getSigner";
 import { ethers } from "ethers";
 
 export const sendTokens = async (
@@ -5,8 +6,7 @@ export const sendTokens = async (
   toAddress: string,
   amount: string
 ) => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
+  const signer=await getSigner();
 
   const tokenAbi = [
     "function transfer(address to, uint amount) public returns (bool)",
