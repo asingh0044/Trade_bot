@@ -12,6 +12,7 @@ import {
 } from "../ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { Connect } from "../home/Connect";
+import { navLinks } from "@/lib/constant";
 
 export const Navbar = () => {
   const { connectors, connect } = useConnect();
@@ -44,54 +45,53 @@ export const Navbar = () => {
           Trade Bot
         </Link>
 
-        <div className="flex w-fit items-center gap-x-5">
-          {isConnected && (
-            <Link href="/send" className="text-white uppercase">
-              <div className="text-sm">Send</div>
-            </Link>
-          )}
-          {isConnected && (
-            <Link href="/sendTokens" className="text-white uppercase">
-              <div className="text-sm">Send Tokens</div>
-            </Link>
-          )}
+        <div>
           {!isConnected ? (
-            // <button
-            //   onClick={connectHandler}
-            //   className="px-4 py-2 rounded-full uppercase text-sm bg-white text-black font-semibold cursor-pointer"
-            // >
-            //   Connect
-            // </button>
-            <Connect/>
+            <Connect />
           ) : (
-            <div className="flex items-center w-fit gap-x-2">
-              <div className="text-white text-sm font-semibold">
-                {trimAddress(address)}
+            <div className="flex w-fit gap-x-4 items-center">
+              <div className="w-fir gap-x-3 flex items-center">
+                {Object.keys(navLinks).map((key) => (
+                  <Link
+                    key={Number(key)}
+                    href={navLinks[Number(key)]?.link}
+                    className="text-white uppercase"
+                  >
+                    <div className="text-sm">
+                      {navLinks[Number(key)]?.title}
+                    </div>
+                  </Link>
+                ))}
               </div>
-              <button onClick={copyToClipboard} className="text-white">
-                <Copy size={12} className="cursor-pointer " />
-              </button>
-              <DropdownMenu>
-                <DropdownMenuTrigger className="outline-none border-0">
-                  <ChevronDown className="text-white" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>
-                    <button
-                      className="cursor-pointer flex items-center gap-x-3"
-                      onClick={() => {
-                        disconnect();
-                        router.push("/");
-                      }}
-                    >
-                      <span>
-                        <LogOut size={10} />
-                      </span>{" "}
-                      Disconnect
-                    </button>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center w-fit gap-x-2">
+                <div className="text-white text-sm font-semibold">
+                  {trimAddress(address)}
+                </div>
+                <button onClick={copyToClipboard} className="text-white">
+                  <Copy size={12} className="cursor-pointer " />
+                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="outline-none border-0">
+                    <ChevronDown className="text-white" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem>
+                      <button
+                        className="cursor-pointer flex items-center gap-x-3"
+                        onClick={() => {
+                          disconnect();
+                          router.push("/");
+                        }}
+                      >
+                        <span>
+                          <LogOut size={10} />
+                        </span>{" "}
+                        Disconnect
+                      </button>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           )}
         </div>

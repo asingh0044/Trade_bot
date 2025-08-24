@@ -31,3 +31,9 @@ export const filterOptions: Record<number, { title: string }> = {
   1: { title: "Outgoing" },
   2: { title: "Incoming" },
 };
+
+export const navLinks: Record<number, { link: string; title: string }> = {
+  0: { link: "/send", title: "Send Ether" },
+  1: { link: "/sendTokens", title: "Send Tokens" },
+  2: { link: "/swap", title: "Swap" },
+};
