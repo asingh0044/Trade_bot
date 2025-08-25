@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { useGetQuote } from "@/hooks/useGetQuote";
 import { useGetSwap } from "@/hooks/useGetSwap";
 import { useWalletTokens } from "@/hooks/useWalletTokens";
+import { useWrap } from "@/hooks/useWrap";
 import { ETH_TOKEN, USDC_TOKEN } from "@/lib/constant";
 import { getSwapTokens } from "@/services/getSwapTokens";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
@@ -71,6 +72,26 @@ const Page = () => {
       });
     }
   };
+
+  const { mutate: mutateWrap, isPending: wrapPending } = useWrap();
+  const wrapHandler = () => {
+    if (!token1Index || !token2Index) return;
+    const inputToken = getSwapTokens(token1Index);
+    mutateWrap(
+      { inputToken, amount: asset1 },
+      {
+        onSuccess: () => {
+          toast(token1Index === 3 ? "Unwrap successful" : "Wrap successful");
+          setAsset1("");
+          refetchEThBalance();
+          refetchTokens();
+        },
+        onError: () => {
+          toast(token1Index === 3 ? "Unwrap failed" : "Wrap failed");
+        },
+      }
+    );
+  };
   return (
     <div className="w-full h-[calc(100vh-6rem)] flex items-center justify-center">
       <div className="space-y-8 w-11/12 relative md:w-3/4 lg:w-[600px] py-6 px-4 lg:py-12 lg:px-8 rounded-md shadowm-sm">
@@ -89,7 +110,7 @@ const Page = () => {
                 <div
                   className={`text-sm text-right ${
                     Number(asset1) >
-                    Number(walletTokens?.[token1Index]?.tokenBalance)
+                    Number(updatedTokens?.[token1Index]?.tokenBalance)
                       ? "text-red-500"
                       : "text-green-500"
                   }`}
@@ -144,22 +165,46 @@ const Page = () => {
                     value={""}
                   />
                 ) : (
-                  <div className=" outline-none border-0 text-6xl font-bold ">
-                    {Number(quoteData).toFixed(6) || ""}
-                  </div>
+                  <>
+                    {(token1Index === 3 && token2Index === 4) ||
+                    (token1Index === 4 && token2Index === 3) ? (
+                      <div className=" outline-none border-0 text-6xl font-bold ">
+                        {asset1}
+                      </div>
+                    ) : (
+                      <div className=" outline-none border-0 text-6xl font-bold ">
+                        {Number(quoteData).toFixed(6) || ""}
+                      </div>
+                    )}
+                  </>
                 )}
               </>
             )}
           </>
         </div>
 
-        <Button
-          onClick={swapHandler}
-          disabled={asset1.length <= 0}
-          className="w-full py-4 cursor-pointer"
-        >
-          {isPending ? "Loading..." : "Swap"}
-        </Button>
+        {(token1Index === 3 && token2Index === 4) ||
+        (token1Index === 4 && token2Index === 3) ? (
+          <Button
+            onClick={wrapHandler}
+            disabled={asset1.length <= 0}
+            className="w-full py-4 cursor-pointer"
+          >
+            {wrapPending ? (
+              "Loading..."
+            ) : (
+              <span>{token1Index === 3 ? "Unwrap" : "Wrap"}</span>
+            )}
+          </Button>
+        ) : (
+          <Button
+            onClick={swapHandler}
+            disabled={asset1.length <= 0}
+            className="w-full py-4 cursor-pointer"
+          >
+            {isPending ? "Loading..." : "Swap"}
+          </Button>
+        )}
       </div>
     </div>
   );
