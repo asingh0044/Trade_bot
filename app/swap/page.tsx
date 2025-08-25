@@ -1,17 +1,15 @@
 "use client";
-import { Loader2 } from "@/components/common/Loader";
-import { TokenDropdown } from "@/components/common/TokenDropdown";
+import { Card1 } from "@/components/swap/Card1";
+import { Card2 } from "@/components/swap/Card2";
 import { Button } from "@/components/ui/button";
 import { useGetQuote } from "@/hooks/useGetQuote";
 import { useGetSwap } from "@/hooks/useGetSwap";
 import { useWalletTokens } from "@/hooks/useWalletTokens";
 import { useWrap } from "@/hooks/useWrap";
-import { ETH_TOKEN, USDC_TOKEN } from "@/lib/constant";
 import { getSwapTokens } from "@/services/getSwapTokens";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
 import { addSepoliaETH } from "@/services/UpdatedTokens";
 import { SwapExactInSingle } from "@uniswap/v4-sdk";
-import { ArrowDownUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useBalance } from "wagmi";
@@ -95,93 +93,27 @@ const Page = () => {
   return (
     <div className="w-full h-[calc(100vh-6rem)] flex items-center justify-center">
       <div className="space-y-8 w-11/12 relative md:w-3/4 lg:w-[600px] py-6 px-4 lg:py-12 lg:px-8 rounded-md shadowm-sm">
-        <div className="w-full bg-white p-8 rounded-md">
-          <div className="w-full flex justify-between ">
-            <div>Sell</div>
-            <div className="">
-              <TokenDropdown
-                dropdownProps={{
-                  tokenIndex: token1Index,
-                  data: updatedTokens,
-                  setTokenIndex: setToken1Index,
-                }}
-              />
-              {token1Index !== -1 && (
-                <div
-                  className={`text-sm text-right ${
-                    Number(asset1) >
-                    Number(updatedTokens?.[token1Index]?.tokenBalance)
-                      ? "text-red-500"
-                      : "text-green-500"
-                  }`}
-                >
-                  {updatedTokens?.[token1Index].tokenBalance}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <input
-            value={asset1}
-            type="text"
-            placeholder="0.05"
-            className="w-full mt-3 outline-none border-0 text-6xl font-bold "
-            onChange={(e) => setAsset1(e.target.value)}
-          />
-        </div>
-
-        {/* <button className="w-fit mx-auto absolute top-[41%] left-[45%]  bg-white p-2.5 text-black border-4 border-black rounded-md cursor-pointer">
-          <ArrowDownUp />
-        </button> */}
-        <div className="w-full bg-white p-8 rounded-md">
-          <div className="w-full flex justify-between">
-            <div>Buy</div>
-            <div className="">
-              <TokenDropdown
-                dropdownProps={{
-                  tokenIndex: token2Index,
-                  data: updatedTokens,
-                  setTokenIndex: setToken2Index,
-                }}
-              />
-              {token2Index !== -1 && (
-                <div className="text-right text-sm  ">
-                  {updatedTokens?.[token2Index]?.tokenBalance}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <>
-            {loading === true ? (
-              <Loader2 />
-            ) : (
-              <>
-                {asset1 === "" ? (
-                  <input
-                    disabled
-                    type="text"
-                    className=" outline-none border-0 text-6xl font-bold "
-                    value={""}
-                  />
-                ) : (
-                  <>
-                    {(token1Index === 3 && token2Index === 4) ||
-                    (token1Index === 4 && token2Index === 3) ? (
-                      <div className=" outline-none border-0 text-6xl font-bold ">
-                        {asset1}
-                      </div>
-                    ) : (
-                      <div className=" outline-none border-0 text-6xl font-bold ">
-                        {Number(quoteData).toFixed(6) || ""}
-                      </div>
-                    )}
-                  </>
-                )}
-              </>
-            )}
-          </>
-        </div>
+        <Card1
+          props={{
+            token1Index: token1Index,
+            updatedTokens: updatedTokens!,
+            setToken1Index: setToken1Index,
+            asset1: asset1,
+            setAsset1: setAsset1,
+          }}
+        />
+        <Card2
+          props={{
+            token1Index: token1Index,
+            token2Index: token2Index,
+            updatedTokens: updatedTokens!,
+            setToken2Index: setToken2Index,
+            loading: loading,
+            asset1: asset1,
+            setAsset1: setAsset1,
+            quoteData: quoteData!,
+          }}
+        />
 
         {(token1Index === 3 && token2Index === 4) ||
         (token1Index === 4 && token2Index === 3) ? (
