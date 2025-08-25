@@ -1,17 +1,18 @@
 import { sendTokens } from "@/actions/sendToken";
 import { useMutation } from "@tanstack/react-query";
+import { Token } from "@uniswap/sdk-core";
 
 export const useSendToken = () => {
   return useMutation({
     mutationKey: ["sendToken"],
     mutationFn: ({
-      tokenAddress,
+      inputToken,
       toAddress,
       amount,
     }: {
-      tokenAddress: string;
+      inputToken:Token;
       toAddress: string;
       amount: string;
-    }) => sendTokens(tokenAddress, toAddress, amount),
+    }) => sendTokens(inputToken, toAddress, amount),
   });
 };

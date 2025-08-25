@@ -18,6 +18,8 @@ import { useWalletTokens } from "@/hooks/useWalletTokens";
 import { useState } from "react";
 import { useSendToken } from "@/hooks/useSendToken";
 import { TokenDropdown } from "@/components/common/TokenDropdown";
+import { getSwapTokens } from "@/services/getSwapTokens";
+import { toast } from "sonner";
 
 const Page = () => {
   const [tokenIndex, setTokenIndex] = useState<number>(-1);
@@ -38,7 +40,7 @@ const Page = () => {
   async function onSubmit(values: z.infer<typeof tokenFormSchema>) {
     const res = await mutation.mutateAsync(
       {
-        tokenAddress: values.contractAddress,
+        inputToken: getSwapTokens(tokenIndex),
         toAddress: values.address,
         amount: values.amount,
       },
@@ -47,6 +49,7 @@ const Page = () => {
           refetch();
           form.reset();
           setTokenIndex(-1);
+          toast("Tokens Sent");
         },
       }
     );
