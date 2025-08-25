@@ -15,15 +15,9 @@ import { tokenFormSchema } from "@/lib/formSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useWalletTokens } from "@/hooks/useWalletTokens";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import { useSendToken } from "@/hooks/useSendToken";
+import { TokenDropdown } from "@/components/common/TokenDropdown";
 
 const Page = () => {
   const [tokenIndex, setTokenIndex] = useState<number>(-1);
@@ -71,30 +65,14 @@ const Page = () => {
               <FormItem>
                 <FormLabel>Select Token</FormLabel>
                 <FormControl>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="border flex items-center gap-x-3 px-3 py-1 rounded-md text-sm w-fit">
-                      {tokenIndex === -1
-                        ? "Choose Token"
-                        : `${data?.[tokenIndex].name}`}
-                      <ChevronDown className="text-black" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      {data?.map((item, index) => (
-                        <DropdownMenuItem key={item.contractAddress}>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setTokenIndex(index);
-                              field.onChange(item.contractAddress);
-                            }}
-                            className="cursor-pointer flex items-center gap-x-3"
-                          >
-                            {item.name}
-                          </button>
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <TokenDropdown
+                    dropdownProps={{
+                      tokenIndex,
+                      data,
+                      setTokenIndex,
+                      field,
+                    }}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

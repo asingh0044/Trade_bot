@@ -1,48 +1,54 @@
 "use client";
 import { Loader2 } from "@/components/common/Loader";
+import { TokenDropdown } from "@/components/common/TokenDropdown";
 import { Button } from "@/components/ui/button";
 import { useGetQuote } from "@/hooks/useGetQuote";
 import { useGetSwap } from "@/hooks/useGetSwap";
-import {
-  ETH_TOKEN,
-  SEPOLIA_CHAINID,
-  USDC_ADDRESS,
-  USDC_TOKEN,
-} from "@/lib/constant";
+import { useWalletTokens } from "@/hooks/useWalletTokens";
+import { ETH_TOKEN, USDC_TOKEN } from "@/lib/constant";
+import { getSwapTokens } from "@/services/getSwapTokens";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
+import { addSepoliaETH } from "@/services/UpdatedTokens";
 import { SwapExactInSingle } from "@uniswap/v4-sdk";
-import { formatUnits } from "ethers/lib/utils";
 import { ArrowDownUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { erc20Abi } from "viem";
-import { useAccount, useBalance, useReadContract } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
 
 const Page = () => {
   const [asset1, setAsset1] = useState<string>("");
   const [config, setConfig] = useState<SwapExactInSingle | null>(null);
   const { address } = useAccount();
   const [loading, setLoading] = useState<boolean>(false);
+  const [token1Index, setToken1Index] = useState<number>(-1);
+  const [token2Index, setToken2Index] = useState<number>(-1);
+
   const { data: walletBalance, refetch: refetchEThBalance } = useBalance({
     address,
   });
+  const { data: walletTokens, refetch: refetchTokens } = useWalletTokens(
+    address!
+  );
+  let updatedTokens = walletTokens;
+  if (walletTokens && walletBalance) {
+    updatedTokens = addSepoliaETH(updatedTokens!, walletBalance.formatted);
+  }
 
-  const { data, refetch: refetchUsdcBalance } = useReadContract({
-    address: USDC_ADDRESS,
-    abi: erc20Abi,
-    functionName: "balanceOf",
-    args: address ? [address] : undefined,
-    chainId: SEPOLIA_CHAINID,
-  });
-  const usdcBalance = data ? formatUnits(data as bigint, 6) : "0";
-  const { data: quoteData, refetch } = useGetQuote(config,ETH_TOKEN);
+  const { data: quoteData, refetch } = useGetQuote(
+    config,
+    getSwapTokens(token2Index)
+  );
   if (address && asset1) {
   }
   useEffect(() => {
     setLoading(true);
     //todo: debouncing
     if (asset1) {
-      const config = getUniswapConfig(USDC_TOKEN, ETH_TOKEN, asset1);
+      const config = getUniswapConfig(
+        getSwapTokens(token1Index),
+        getSwapTokens(token2Index),
+        asset1
+      );
       setConfig(config!);
       refetch();
     }
@@ -57,7 +63,7 @@ const Page = () => {
           toast("Swap successful");
           setAsset1("");
           refetchEThBalance();
-          refetchUsdcBalance();
+          refetchTokens();
         },
         onError: () => {
           toast("Swap Failed");
@@ -69,70 +75,82 @@ const Page = () => {
     <div className="w-full h-[calc(100vh-6rem)] flex items-center justify-center">
       <div className="space-y-8 w-11/12 relative md:w-3/4 lg:w-[600px] py-6 px-4 lg:py-12 lg:px-8 rounded-md shadowm-sm">
         <div className="w-full bg-white p-8 rounded-md">
-          <div className="flex w-full justify-between">
-            <div className="w-3/4">
-              <div>Sell</div>
-              <input
-                value={asset1}
-                type="text"
-                placeholder="0.05"
-                className="w-1/2 outline-none border-0 text-6xl font-bold "
-                onChange={(e) => setAsset1(e.target.value)}
-              />
-            </div>
-
+          <div className="w-full flex justify-between ">
+            <div>Sell</div>
             <div className="">
-              <div className="font-semibold text-2xl text-right">USDC</div>
-              {usdcBalance && (
+              <TokenDropdown
+                dropdownProps={{
+                  tokenIndex: token1Index,
+                  data: updatedTokens,
+                  setTokenIndex: setToken1Index,
+                }}
+              />
+              {token1Index !== -1 && (
                 <div
-                  className={`text-right ${
-                    Number(asset1) > Number(usdcBalance)
+                  className={`text-sm text-right ${
+                    Number(asset1) >
+                    Number(walletTokens?.[token1Index]?.tokenBalance)
                       ? "text-red-500"
-                      : "text-gray-500"
+                      : "text-green-500"
                   }`}
                 >
-                  {usdcBalance}
+                  {updatedTokens?.[token1Index].tokenBalance}
                 </div>
               )}
             </div>
           </div>
+
+          <input
+            value={asset1}
+            type="text"
+            placeholder="0.05"
+            className="w-full mt-3 outline-none border-0 text-6xl font-bold "
+            onChange={(e) => setAsset1(e.target.value)}
+          />
         </div>
 
-        <button className="w-fit mx-auto absolute top-[38.5%] left-[45%]  bg-white p-2.5 text-black border-4 border-black rounded-md cursor-pointer">
+        {/* <button className="w-fit mx-auto absolute top-[41%] left-[45%]  bg-white p-2.5 text-black border-4 border-black rounded-md cursor-pointer">
           <ArrowDownUp />
-        </button>
+        </button> */}
         <div className="w-full bg-white p-8 rounded-md">
-          <div className="flex w-full justify-between">
-            <div className="w-3/4">
-              <div>Buy</div>
-              <>
-                {loading === true ? (
-                  <Loader2 />
-                ) : (
-                  <>
-                    {asset1 === "" ? (
-                      <input
-                        disabled
-                        type="text"
-                        className=" outline-none border-0 text-6xl font-bold "
-                        value={""}
-                      />
-                    ) : (
-                      <div
-                        className=" outline-none border-0 text-6xl font-bold "
-                      >{Number(quoteData).toFixed(6) || ""}</div>
-                    )}
-                  </>
-                )}
-              </>
-            </div>
+          <div className="w-full flex justify-between">
+            <div>Buy</div>
             <div className="">
-              <div className="font-semibold text-2xl text-right">
-                {walletBalance?.symbol}
-              </div>
-              <div>{Number(walletBalance?.formatted).toFixed(6)}</div>
+              <TokenDropdown
+                dropdownProps={{
+                  tokenIndex: token2Index,
+                  data: updatedTokens,
+                  setTokenIndex: setToken2Index,
+                }}
+              />
+              {token2Index !== -1 && (
+                <div className="text-right text-sm  ">
+                  {updatedTokens?.[token2Index]?.tokenBalance}
+                </div>
+              )}
             </div>
           </div>
+
+          <>
+            {loading === true ? (
+              <Loader2 />
+            ) : (
+              <>
+                {asset1 === "" ? (
+                  <input
+                    disabled
+                    type="text"
+                    className=" outline-none border-0 text-6xl font-bold "
+                    value={""}
+                  />
+                ) : (
+                  <div className=" outline-none border-0 text-6xl font-bold ">
+                    {Number(quoteData).toFixed(6) || ""}
+                  </div>
+                )}
+              </>
+            )}
+          </>
         </div>
 
         <Button
