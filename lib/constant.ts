@@ -53,4 +53,5 @@ export const navLinks: Record<number, { link: string; title: string }> = {
   0: { link: "/send", title: "Send Ether" },
   1: { link: "/sendTokens", title: "Send Tokens" },
   2: { link: "/swap", title: "Swap" },
+  3: { link: "/faucet", title: "Faucet" },
 };
