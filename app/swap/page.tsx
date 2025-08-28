@@ -18,7 +18,6 @@ const Page = () => {
   const [asset1, setAsset1] = useState<string>("");
   const [config, setConfig] = useState<SwapExactInSingle | null>(null);
   const { address } = useAccount();
-  const [loading, setLoading] = useState<boolean>(false);
   const [token1Index, setToken1Index] = useState<number>(-1);
   const [token2Index, setToken2Index] = useState<number>(-1);
 
@@ -33,14 +32,15 @@ const Page = () => {
     updatedTokens = addSepoliaETH(updatedTokens!, walletBalance.formatted);
   }
 
-  const { data: quoteData, refetch } = useGetQuote(
-    config,
-    getSwapTokens(token2Index)
-  );
+  const {
+    data: quoteData,
+    refetch,
+    isLoading,
+    isFetching,
+  } = useGetQuote(config, getSwapTokens(token2Index));
   if (address && asset1) {
   }
   useEffect(() => {
-    setLoading(true);
     //todo: debouncing
     if (asset1) {
       const config = getUniswapConfig(
@@ -51,7 +51,6 @@ const Page = () => {
       setConfig(config!);
       refetch();
     }
-    setLoading(false);
   }, [asset1]);
 
   const { mutate, isPending } = useGetSwap();
@@ -108,10 +107,10 @@ const Page = () => {
             token2Index: token2Index,
             updatedTokens: updatedTokens!,
             setToken2Index: setToken2Index,
-            loading: loading,
             asset1: asset1,
-            setAsset1: setAsset1,
             quoteData: quoteData!,
+            isLoading: isLoading,
+            isFetching: isFetching,
           }}
         />
 

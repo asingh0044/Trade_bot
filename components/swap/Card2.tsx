@@ -8,14 +8,23 @@ type Card2props = {
     token2Index: number;
     updatedTokens: TokenType[];
     setToken2Index: (index: number) => void;
-    loading: boolean;
-    asset1:string;
-    setAsset1: (asset: string) => void;
-    quoteData:string
+    asset1: string;
+    quoteData: string;
+    isLoading: boolean;
+    isFetching: boolean;
   };
 };
-export const Card2 = ({props}:Card2props) => {
-    const {token1Index,token2Index, updatedTokens, setToken2Index, loading, asset1, setAsset1, quoteData} =props;
+export const Card2 = ({ props }: Card2props) => {
+  const {
+    token1Index,
+    token2Index,
+    updatedTokens,
+    setToken2Index,
+    asset1,
+    quoteData,
+    isLoading,
+    isFetching,
+  } = props;
   return (
     <div className="w-full bg-white p-8 rounded-md">
       <div className="w-full flex justify-between">
@@ -37,7 +46,7 @@ export const Card2 = ({props}:Card2props) => {
       </div>
 
       <>
-        {loading === true ? (
+        {isLoading || isFetching ? (
           <Loader2 />
         ) : (
           <>
