@@ -22,7 +22,7 @@ export const getSingleSwap = async (CurrentConfig: SwapExactInSingle) => {
     : CurrentConfig.poolKey.currency0;
 
   try {
-    const deadline = Math.floor(Date.now() / 1000) + 3600; //1 hr
+    const deadline = Math.floor(Date.now() / 1000) + 3600; 
 
     const v4Planner = new V4Planner();
     const routePlanner = new RoutePlanner();
@@ -84,7 +84,7 @@ const approveErc20Token = async (tokenInAddress: string, deadline: number) => {
     await permit2Contract.approve(
       tokenInAddress,
       UNIVERSAL_ROUTER_ADDRESS,
-      ethers.BigNumber.from(2).pow(160).sub(1), // MAX_UINT160
+      ethers.BigNumber.from(2).pow(160).sub(1), 
       deadline
     );
   } catch (error) {

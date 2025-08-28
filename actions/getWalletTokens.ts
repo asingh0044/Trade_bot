@@ -36,7 +36,7 @@ export async function getWalletTokens(address: `0x${string}`) {
     );
 
     return tokensWithMeta;
-  } catch (error) {
+  } catch (error:any) {
     throw new Error(error?.message);
   }
 }

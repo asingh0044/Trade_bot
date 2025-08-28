@@ -14,13 +14,12 @@ export const wrapETH = async (amountInEth: string): Promise<boolean> => {
     const weth = new ethers.Contract(WETH_ADDRESS, WETH_ABI, signer);
 
     const tx = await weth.deposit({
-      value: ethers.utils.parseEther(amountInEth), // e.g. "0.1"
+      value: ethers.utils.parseEther(amountInEth),
     });
     await tx.wait();
 
     return true;
-  } catch (error) {
-    console.error("Wrap failed:", error.reason || error.message);
+  } catch (error:any) {
     throw error;
   }
 };
@@ -34,8 +33,7 @@ export const unwrapWETH = async (amountInWeth: string): Promise<boolean> => {
     await tx.wait();
 
     return true;
-  } catch (error) {
-    console.error("Unwrap failed:", error.reason || error.message);
+  } catch (error:any) {
     throw error;
   }
 };

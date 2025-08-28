@@ -26,7 +26,6 @@ export const sendTokens = async (
     const receipt = await tx.wait();
     return receipt;
   } catch (error) {
-    console.error("Error sending tokens:", error);
     throw error;
   }
 };
