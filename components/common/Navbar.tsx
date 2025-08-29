@@ -1,38 +1,28 @@
 "use client";
 import { trimAddress } from "@/lib/utils";
-import { ChevronDown, Copy, LogOut } from "lucide-react";
+import { ChevronDown, Copy, LogOut, Menu } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { useRouter } from "next/navigation";
 import { Connect } from "../home/Connect";
 import { navLinks } from "@/lib/constant";
+import { toast } from "sonner";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { NavbarMenu } from "./NavbarMenu";
+import { DisconnectButton } from "./DisconnectButton";
+import { CopyButton } from "./CopyButton";
 
 export const Navbar = () => {
-  const { connectors, connect } = useConnect();
   const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const router = useRouter();
-  const connectHandler = () => {
-    const metamaskConnector = connectors.find(
-      (connector) =>
-        connector.name === "MetaMask" || connector.id === "injected"
-    );
-    if (!metamaskConnector) {
-      alert("Please install Metamask");
-      return;
-    }
-    connect({ connector: metamaskConnector });
-  };
-
   const copyToClipboard = () => {
     navigator.clipboard.writeText(address!);
+    toast.success("Address Copied");
   };
 
   return (
@@ -49,50 +39,50 @@ export const Navbar = () => {
           {!isConnected ? (
             <Connect />
           ) : (
-            <div className="flex w-fit gap-x-4 items-center">
-              <div className="w-fir gap-x-3 flex items-center">
-                {Object.keys(navLinks).map((key) => (
-                  <Link
-                    key={Number(key)}
-                    href={navLinks[Number(key)]?.link}
-                    className="text-white uppercase"
-                  >
-                    <div className="text-sm">
-                      {navLinks[Number(key)]?.title}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              <div className="flex items-center w-fit gap-x-2">
-                <div className="text-white text-sm font-semibold">
-                  {trimAddress(address)}
+            <>
+              <div className="hidden lg:flex w-fit gap-x-4 items-center">
+                <div className="w-fit gap-x-3 flex items-center">
+                  {Object.keys(navLinks).map((key) => (
+                    <Link
+                      key={Number(key)}
+                      href={navLinks[Number(key)]?.link}
+                      className="text-white uppercase"
+                    >
+                      <div className="text-sm">
+                        {navLinks[Number(key)]?.title}
+                      </div>
+                    </Link>
+                  ))}
                 </div>
-                <button onClick={copyToClipboard} className="text-white">
-                  <Copy size={12} className="cursor-pointer " />
-                </button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger className="outline-none border-0">
-                    <ChevronDown className="text-white" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>
-                      <button
-                        className="cursor-pointer flex items-center gap-x-3"
-                        onClick={() => {
-                          disconnect();
-                          router.push("/");
-                        }}
-                      >
-                        <span>
-                          <LogOut size={10} />
-                        </span>{" "}
-                        Disconnect
-                      </button>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <div className="flex items-center w-fit gap-x-2">
+                  <div className="text-white text-sm font-semibold">
+                    {trimAddress(address)}
+                  </div>
+                  <CopyButton address={address} />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger className="outline-none border-0">
+                      <ChevronDown className="text-white" />
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>
+                        <DisconnectButton />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
               </div>
-            </div>
+
+              <div className="block lg:hidden">
+                <Popover>
+                  <PopoverTrigger className="text-white cursor-pointer translate-y-1 ">
+                    <Menu />
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <NavbarMenu address={address} />
+                  </PopoverContent>
+                </Popover>
+              </div>
+            </>
           )}
         </div>
       </div>
