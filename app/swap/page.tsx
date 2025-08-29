@@ -38,7 +38,12 @@ const Page = () => {
     refetch,
     isLoading,
     isFetching,
-  } = useGetQuote(config, getSwapTokens(token2Index));
+  } = useGetQuote(
+    config,
+    token2Index !== -1 && updatedTokens
+      ? getSwapTokens(updatedTokens[token2Index].contractAddress)
+      : null
+  );
 
   useEffect(() => {
     if (
@@ -48,8 +53,12 @@ const Page = () => {
       token1Index !== token2Index
     ) {
       const config = getUniswapConfig(
-        getSwapTokens(token1Index),
-        getSwapTokens(token2Index),
+        updatedTokens && token1Index !== -1
+          ? getSwapTokens(updatedTokens[token1Index].contractAddress)
+          : null,
+        updatedTokens && token2Index !== -1
+          ? getSwapTokens(updatedTokens[token2Index].contractAddress)
+          : null,
         asset1
       );
       setConfig(config!);
@@ -82,12 +91,17 @@ const Page = () => {
 
   const { mutate: mutateWrap, isPending: wrapPending } = useWrap();
   const wrapHandler = () => {
-    if (!token1Index || !token2Index) return;
-    const inputToken = getSwapTokens(token1Index);
+    if (!token1Index || !token2Index || !updatedTokens) return;
+    const inputToken = getSwapTokens(
+      updatedTokens[token1Index].contractAddress
+    );
     mutateWrap(
       { inputToken, amount: asset1 },
       {
         onSuccess: () => {
+          setAsset1("");
+          setToken1Index(-1);
+          setToken2Index(-1);
           toast(
             updatedTokens?.[token1Index].contractAddress.toLowerCase() ===
               ETH_ADDRESS.toLowerCase()

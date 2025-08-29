@@ -3,8 +3,8 @@ import { ethers } from "ethers";
 import { Token } from "@uniswap/sdk-core";
 
 export const getUniswapConfig = (
-  tokenIn: Token,
-  tokenOut: Token,
+  tokenIn: Token | null,
+  tokenOut: Token| null,
   amountIn: string
 ): SwapExactInSingle | undefined => {
   if (!tokenIn || !tokenOut || !amountIn) return;
