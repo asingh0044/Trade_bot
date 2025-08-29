@@ -54,11 +54,14 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
   return (
     <>
       {!data ? (
-        <div>NO Transactions available...</div>
+        <div className="w-full mt-8 text-center font-bold text-xl md:text-3xl lg:text-5xl text-white">
+          No Transactions available...
+        </div>
       ) : (
         <>
+          <div className="mt-6 lg:mt-12">Recent Transactions:</div>
           <DropdownMenu>
-            <DropdownMenuTrigger className="outline-none border-0 flex items-center gap-x-3 px-3 py-1 rounded-full bg-white text-black">
+            <DropdownMenuTrigger className="outline-none border-0 flex items-center gap-x-3 px-3 py-1 rounded-full bg-white text-black mt-2">
               {filterOptions[Number(filterOption)].title}{" "}
               <ChevronDown className="text-black" />
             </DropdownMenuTrigger>
@@ -117,7 +120,7 @@ export const TransactionTable = ({ data }: TransactionTableProps) => {
                     </TableCell>
                     {(filterOption === 1 || filterOption === 0) && (
                       <TableCell className="text-right">
-                        {transaction.to}
+                        {transaction.to || transaction.contractAddress}
                       </TableCell>
                     )}
                     {(filterOption === 2 || filterOption === 0) && (

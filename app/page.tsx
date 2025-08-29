@@ -4,6 +4,7 @@ import { SepoliaTable } from "@/components/home/SepoliaTable";
 import { TransactionTable } from "@/components/home/TransactionTable";
 import { useSepoliaTransactions } from "@/hooks/useSepoliaTransactions";
 import { useWalletAddress } from "@/hooks/useWalletAddress";
+import { getRecentTransactions } from "@/lib/utils";
 import { ethers } from "ethers";
 import React, { useEffect } from "react";
 import { useAccount, useBalance } from "wagmi";
@@ -17,7 +18,7 @@ const Page = () => {
     if (!window.ethereum) return;
     const provider = new ethers.providers.Web3Provider(window.ethereum);
 
-    const onNewBlock = (blockNumber:number) => {
+    const onNewBlock = (blockNumber: number) => {
       refetch();
     };
 
@@ -36,9 +37,9 @@ const Page = () => {
           {Number(walletBalance?.formatted).toFixed(4)} {walletBalance?.symbol}
         </div>
       )}
-      {address && (
+      {address && walletTransactions && (
         <div className="mt-4 mb-8 lg:mb-20">
-          <TransactionTable data={walletTransactions!} />
+          <TransactionTable data={getRecentTransactions(walletTransactions!)} />
         </div>
       )}{" "}
       {!address && (

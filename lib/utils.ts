@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { ethers } from "ethers";
 import { twMerge } from "tailwind-merge";
+import { Transaction } from "./types/transaction";
 
 export const trimAddress = (addr?: string) => {
   if (!addr) return "";
@@ -14,3 +15,8 @@ export function formatTokenBalance(tokenBalanceHex: string, decimals: number) {
   const balanceBN = ethers.BigNumber.from(tokenBalanceHex);
   return ethers.utils.formatUnits(balanceBN, decimals);
 }
+export const getRecentTransactions = (walletTransactions: Transaction[]) => {
+  return walletTransactions
+    .sort((a, b) => Number(b.blockNumber) - Number(a.blockNumber))
+    .slice(0, 20);
+};
