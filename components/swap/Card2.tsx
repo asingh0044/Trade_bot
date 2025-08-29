@@ -29,7 +29,7 @@ export const Card2 = ({ props }: Card2props) => {
     <div className="w-full bg-white p-8 rounded-md">
       <div className="w-full flex justify-between">
         <div>Buy</div>
-        <div className="">
+        <div className="flex flex-col items-end">
           <TokenDropdown
             dropdownProps={{
               tokenIndex: token2Index,
@@ -39,7 +39,7 @@ export const Card2 = ({ props }: Card2props) => {
           />
           {token2Index !== -1 && (
             <div className="text-right text-sm  ">
-              {updatedTokens?.[token2Index]?.tokenBalance}
+              {Number(updatedTokens[token2Index].tokenBalance).toFixed(2)}
             </div>
           )}
         </div>
@@ -47,26 +47,21 @@ export const Card2 = ({ props }: Card2props) => {
 
       <>
         {isLoading || isFetching ? (
-          <Loader2 />
+          <div className="mt-16"><Loader2 /></div>
         ) : (
           <>
-            {asset1 === "" ? (
-              <input
-                disabled
-                type="text"
-                className=" outline-none border-0 text-6xl font-bold "
-                value={""}
-              />
+            {(token1Index === 3 && token2Index === 4) ||
+            (token1Index === 4 && token2Index === 3) ? (
+              <div className=" text-6xl font-bold ">{asset1}</div>
             ) : (
               <>
-                {(token1Index === 3 && token2Index === 4) ||
-                (token1Index === 4 && token2Index === 3) ? (
-                  <div className=" outline-none border-0 text-6xl font-bold ">
-                    {asset1}
+                {quoteData && asset1 ? (
+                  <div className="text-6xl font-bold ">
+                    {Number(quoteData).toFixed(6)}
                   </div>
                 ) : (
-                  <div className=" outline-none border-0 text-6xl font-bold ">
-                    {Number(quoteData).toFixed(6) || ""}
+                  <div className="mt-16 text-xs md:text-sm">
+                    Please choose tokens and amount to know conversion rate.
                   </div>
                 )}
               </>

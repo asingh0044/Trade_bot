@@ -38,11 +38,14 @@ const Page = () => {
     isLoading,
     isFetching,
   } = useGetQuote(config, getSwapTokens(token2Index));
-  if (address && asset1) {
-  }
+
   useEffect(() => {
-    //todo: debouncing
-    if (asset1) {
+    if (
+      asset1 &&
+      token1Index !== -1 &&
+      token2Index !== -1 &&
+      token1Index !== token2Index
+    ) {
       const config = getUniswapConfig(
         getSwapTokens(token1Index),
         getSwapTokens(token2Index),
@@ -51,10 +54,14 @@ const Page = () => {
       setConfig(config!);
       refetch();
     }
-  }, [asset1]);
+  }, [asset1, token1Index, token2Index]);
 
   const { mutate, isPending } = useGetSwap();
   const swapHandler = () => {
+    if (token1Index === token2Index) {
+      toast.error("Please choose another set of tokens.");
+      return;
+    }
     if (config) {
       mutate(config, {
         onSuccess: () => {
@@ -62,6 +69,8 @@ const Page = () => {
           setAsset1("");
           refetchEThBalance();
           refetchTokens();
+          setToken1Index(-1);
+          setToken2Index(-1);
         },
         onError: () => {
           toast("Swap Failed");
@@ -130,7 +139,9 @@ const Page = () => {
         ) : (
           <Button
             onClick={swapHandler}
-            disabled={asset1.length <= 0}
+            disabled={
+              asset1.length <= 0 || token1Index === -1 || token2Index === -1
+            }
             className="w-full py-4 cursor-pointer"
           >
             {isPending ? "Loading..." : "Swap"}

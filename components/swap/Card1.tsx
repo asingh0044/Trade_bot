@@ -12,11 +12,12 @@ type Card1props = {
 export const Card1 = ({ props }: Card1props) => {
   const { token1Index, updatedTokens, setToken1Index, asset1, setAsset1 } =
     props;
+
   return (
     <div className="w-full bg-white p-8 rounded-md">
       <div className="w-full flex justify-between ">
         <div>Sell</div>
-        <div className="">
+        <div className="flex flex-col items-end">
           <TokenDropdown
             dropdownProps={{
               tokenIndex: token1Index,
@@ -33,7 +34,7 @@ export const Card1 = ({ props }: Card1props) => {
                   : "text-green-500"
               }`}
             >
-              {updatedTokens?.[token1Index].tokenBalance}
+              {Number(updatedTokens[token1Index].tokenBalance).toFixed(2)}
             </div>
           )}
         </div>
