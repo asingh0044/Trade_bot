@@ -1,6 +1,7 @@
 import { TokenType } from "@/lib/types/transaction";
 import { TokenDropdown } from "../common/TokenDropdown";
 import { Loader2 } from "../common/Loader";
+import { ETH_ADDRESS, WETH_ADDRESS } from "@/lib/constant";
 
 type Card2props = {
   props: {
@@ -47,11 +48,19 @@ export const Card2 = ({ props }: Card2props) => {
 
       <>
         {isLoading || isFetching ? (
-          <div className="mt-16"><Loader2 /></div>
+          <div className="mt-16">
+            <Loader2 />
+          </div>
         ) : (
           <>
-            {(token1Index === 3 && token2Index === 4) ||
-            (token1Index === 4 && token2Index === 3) ? (
+            {(updatedTokens?.[token1Index]?.contractAddress.toLowerCase() ===
+              ETH_ADDRESS.toLowerCase() &&
+              updatedTokens?.[token2Index]?.contractAddress.toLowerCase() ===
+                WETH_ADDRESS.toLowerCase()) ||
+            (updatedTokens?.[token1Index]?.contractAddress.toLowerCase() ===
+              WETH_ADDRESS.toLowerCase() &&
+              updatedTokens?.[token2Index]?.contractAddress.toLowerCase() ===
+                ETH_ADDRESS.toLowerCase()) ? (
               <div className=" text-6xl font-bold ">{asset1}</div>
             ) : (
               <>

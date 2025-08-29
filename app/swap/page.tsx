@@ -6,6 +6,7 @@ import { useGetQuote } from "@/hooks/useGetQuote";
 import { useGetSwap } from "@/hooks/useGetSwap";
 import { useWalletTokens } from "@/hooks/useWalletTokens";
 import { useWrap } from "@/hooks/useWrap";
+import { ETH_ADDRESS, WETH_ADDRESS } from "@/lib/constant";
 import { getSwapTokens } from "@/services/getSwapTokens";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
 import { addSepoliaETH } from "@/services/UpdatedTokens";
@@ -87,13 +88,23 @@ const Page = () => {
       { inputToken, amount: asset1 },
       {
         onSuccess: () => {
-          toast(token1Index === 3 ? "Unwrap successful" : "Wrap successful");
+          toast(
+            updatedTokens?.[token1Index].contractAddress.toLowerCase() ===
+              ETH_ADDRESS.toLowerCase()
+              ? "Wrap successful"
+              : "Unrap successful"
+          );
           setAsset1("");
           refetchEThBalance();
           refetchTokens();
         },
         onError: () => {
-          toast(token1Index === 3 ? "Unwrap failed" : "Wrap failed");
+          toast(
+            updatedTokens?.[token1Index].contractAddress.toLowerCase() ===
+              ETH_ADDRESS.toLowerCase()
+              ? "Wrap failed"
+              : "Unwrap failed"
+          );
         },
       }
     );
@@ -123,8 +134,14 @@ const Page = () => {
           }}
         />
 
-        {(token1Index === 3 && token2Index === 4) ||
-        (token1Index === 4 && token2Index === 3) ? (
+        {(updatedTokens?.[token1Index]?.contractAddress.toLowerCase() ===
+          ETH_ADDRESS.toLowerCase() &&
+          updatedTokens?.[token2Index]?.contractAddress.toLowerCase() ===
+            WETH_ADDRESS.toLowerCase()) ||
+        (updatedTokens?.[token1Index]?.contractAddress.toLowerCase() ===
+          WETH_ADDRESS.toLowerCase() &&
+          updatedTokens?.[token2Index]?.contractAddress.toLowerCase() ===
+            ETH_ADDRESS.toLowerCase()) ? (
           <Button
             onClick={wrapHandler}
             disabled={asset1.length <= 0}
@@ -133,7 +150,12 @@ const Page = () => {
             {wrapPending ? (
               "Loading..."
             ) : (
-              <span>{token1Index === 3 ? "Unwrap" : "Wrap"}</span>
+              <span>
+                {updatedTokens?.[token1Index].contractAddress.toLowerCase() ===
+                WETH_ADDRESS.toLowerCase()
+                  ? "Unwrap"
+                  : "Wrap"}
+              </span>
             )}
           </Button>
         ) : (
