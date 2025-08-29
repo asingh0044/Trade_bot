@@ -1,22 +1,28 @@
 import {
+  ETH_ADDRESS,
   ETH_TOKEN,
   MY_TOKEN,
+  MY_TOKEN_ADDRESS,
   TEST_TOKEN,
+  TEST_TOKEN_ADDRESS,
+  USDC_ADDRESS,
   USDC_TOKEN,
+  WETH_ADDRESS,
   WETH_TOKEN,
 } from "@/lib/constant";
+import { Token } from "@uniswap/sdk-core";
 
-export const getSwapTokens = (tokenIndex: number) => {
-  switch (tokenIndex) {
-    case 0:
+export const getSwapTokens = (tokenAddress: string ) : Token => {
+  switch (tokenAddress.toLowerCase()) {
+    case USDC_ADDRESS.toLowerCase():
       return USDC_TOKEN;
-    case 1:
+    case MY_TOKEN_ADDRESS.toLowerCase():
       return MY_TOKEN;
-    case 2:
+    case TEST_TOKEN_ADDRESS.toLowerCase():
       return TEST_TOKEN;
-    case 3:
-      return WETH_TOKEN;
-    default:
+    case ETH_ADDRESS.toLowerCase():
       return ETH_TOKEN;
+    default:
+      return WETH_TOKEN;
   }
 };

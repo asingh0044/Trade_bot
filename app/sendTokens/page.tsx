@@ -39,9 +39,16 @@ const Page = () => {
       toast.error("Please choose another wallet.");
       return;
     }
+    if (!data) {
+      return;
+    }
+    const inputToken=getSwapTokens(data[tokenIndex].contractAddress);
+    if(!inputToken){
+      return;
+    }
     const res = await mutation.mutateAsync(
       {
-        inputToken: getSwapTokens(tokenIndex),
+        inputToken:inputToken ,
         toAddress: values.address,
         amount: values.amount,
       },
