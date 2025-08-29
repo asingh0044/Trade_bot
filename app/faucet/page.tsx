@@ -29,8 +29,8 @@ const Page = () => {
         toast.success(result.message);
         setCaptchaStatus(false);
       },
-      onError: (result) => {
-        toast.error(result.message);
+      onError: () => {
+        toast.error("Transaction Cancelled");
       },
     });
   };
@@ -42,12 +42,12 @@ const Page = () => {
   };
   return (
     <div className="w-full h-[calc(100vh-6rem)] flex items-center justify-center">
-      <BackgroundGradient className="rounded-[22px] w-11/12 lg:w-[600px] p-4 sm:p-10 bg-zinc-900">
+      <BackgroundGradient className="rounded-[22px] w-full mx-auto lg:w-[600px] p-4 sm:p-10 bg-zinc-900">
         <p className="text-base sm:text-xl lg:text-3xl  mt-4 mb-2 text-neutral-200">
           Get Quantek Tokens
         </p>
 
-        <p className="text-sm  text-neutral-300">
+        <p className="text-[0.5rem] sm:text-sm  text-neutral-300">
           Faucets provide tokens with no real-world value for development and
           testing purposes.
         </p>
@@ -56,7 +56,7 @@ const Page = () => {
           <p className="text-xs lg:text-sm text-neutral-300">
             Wallet Address
           </p>
-          <div className="p-2 rounded-md border border-neutral-300 outline-none text-neutral-300">
+          <div className="p-2 text-[10px] sm:text-sm rounded-md border border-neutral-300 outline-none text-neutral-300">
             {address}
           </div>
         </div>
