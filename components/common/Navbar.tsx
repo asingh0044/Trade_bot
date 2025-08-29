@@ -1,6 +1,6 @@
 "use client";
 import { trimAddress } from "@/lib/utils";
-import { ChevronDown, Copy, LogOut, Menu } from "lucide-react";
+import { ChevronDown,  Menu } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import { useAccount } from "wagmi";
@@ -12,7 +12,6 @@ import {
 } from "../ui/dropdown-menu";
 import { Connect } from "../home/Connect";
 import { navLinks } from "@/lib/constant";
-import { toast } from "sonner";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { NavbarMenu } from "./NavbarMenu";
 import { DisconnectButton } from "./DisconnectButton";
@@ -20,10 +19,7 @@ import { CopyButton } from "./CopyButton";
 
 export const Navbar = () => {
   const { address, isConnected } = useAccount();
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(address!);
-    toast.success("Address Copied");
-  };
+
 
   return (
     <div className=" py-2 md:py-4 lg:py-6 border-b-[0.5px] border-white">

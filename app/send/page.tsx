@@ -59,7 +59,7 @@ const Page = () => {
     if (confirmError) {
       toast.error("Transaction failed.");
     }
-  });
+  },[confirmError]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const to = values.address as `0x${string}`;

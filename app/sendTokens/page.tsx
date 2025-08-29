@@ -24,9 +24,6 @@ import { toast } from "sonner";
 const Page = () => {
   const [tokenIndex, setTokenIndex] = useState<number>(-1);
   const { address } = useAccount();
-  if (!address) {
-    return;
-  }
   const { data, refetch } = useWalletTokens(address);
   const form = useForm<z.infer<typeof tokenFormSchema>>({
     resolver: zodResolver(tokenFormSchema),

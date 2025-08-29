@@ -8,12 +8,17 @@ import {
 import { ControllerRenderProps } from "react-hook-form";
 import { TokenType } from "@/lib/types/transaction";
 
+type FormValues = {
+  address: string;
+  amount: string;
+  contractAddress: string;
+};
 type DropdownProps = {
   dropdownProps: {
     tokenIndex: number;
     data?: TokenType[];
     setTokenIndex: (index: number) => void;
-    field?: ControllerRenderProps<any, "contractAddress">;
+    field?: ControllerRenderProps<FormValues, "contractAddress">;
   };
 };
 

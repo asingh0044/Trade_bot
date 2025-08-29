@@ -9,7 +9,7 @@ type Card2props = {
     updatedTokens: TokenType[];
     setToken2Index: (index: number) => void;
     asset1: string;
-    quoteData: string;
+    quoteData: string | null;
     isLoading: boolean;
     isFetching: boolean;
   };
