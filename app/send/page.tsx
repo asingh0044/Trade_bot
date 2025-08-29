@@ -15,13 +15,20 @@ import { Input } from "@/components/ui/input";
 import { formSchema } from "@/lib/formSchema";
 import {
   type BaseError,
+  useAccount,
+  useBalance,
   useSendTransaction,
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { parseEther } from "viem";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useEffect } from "react";
 
 const Page = () => {
+  const { address } = useAccount();
+  const { data: walletBalance, refetch } = useBalance({
+    address: address,
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -35,15 +42,24 @@ const Page = () => {
     isPending,
     error,
   } = useSendTransaction();
-  const router = useRouter();
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
+  const { isSuccess: isConfirmed, error: confirmError ,isFetching:confirmPending } =
     useWaitForTransactionReceipt({
       hash,
     });
 
-  if (isConfirmed) {
-    router.push("/");
-  }
+  useEffect(() => {
+    if (isConfirmed) {
+      refetch();
+      form.reset();
+      toast.success("Transaction confirmed!");
+    }
+  }, [isConfirmed]);
+
+  useEffect(() => {
+    if (confirmError) {
+      toast.error("Transaction failed.");
+    }
+  });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     const to = values.address as `0x${string}`;
@@ -84,12 +100,29 @@ const Page = () => {
               </FormItem>
             )}
           />
-          <Button disabled={isPending} className="cursor-pointer" type="submit">
-            {isPending ? "Confirming..." : "Send"}
+
+          {walletBalance && (
+            <div
+              className={`text-xs md:text-sm ${
+                Number(Number(walletBalance?.formatted)) <
+                Number(form.watch("amount"))
+                  ? "text-red-500"
+                  : "text-green-500"
+              }`}
+            >
+              Current Balance: {Number(walletBalance?.formatted).toFixed(4)}{" "}
+              {walletBalance?.symbol}
+            </div>
+          )}
+          <Button disabled={isPending || confirmPending} className="cursor-pointer" type="submit">
+            {isPending || confirmPending ? "Confirming..." : "Send"}
           </Button>
 
           {hash && (
-            <a target="_blank" href={`${process.env.NEXT_PUBLIC_ETHERSCAN_TRASACTION_URL}${hash}`}>
+            <a
+              target="_blank"
+              href={`${process.env.NEXT_PUBLIC_ETHERSCAN_TRASACTION_URL}${hash}`}
+            >
               <Button variant="link">Transaction Details</Button>
             </a>
           )}

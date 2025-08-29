@@ -38,6 +38,10 @@ const Page = () => {
   });
   const mutation = useSendToken();
   async function onSubmit(values: z.infer<typeof tokenFormSchema>) {
+    if (address?.toLowerCase() === values.address.toLowerCase()) {
+      toast.error("Please choose another wallet.");
+      return;
+    }
     const res = await mutation.mutateAsync(
       {
         inputToken: getSwapTokens(tokenIndex),
@@ -50,6 +54,9 @@ const Page = () => {
           form.reset();
           setTokenIndex(-1);
           toast("Tokens Sent");
+        },
+        onError: () => {
+          toast.error("Please Try again Later");
         },
       }
     );
