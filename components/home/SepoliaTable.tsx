@@ -38,7 +38,7 @@ export const SepoliaTable = ({ data }: SepoliaTableProps) => {
               <TableCell>
                 <a
                   target="_blank"
-                  href={`https://sepolia.etherscan.io/tx/${transaction.hash}`}
+                  href={`${process.env.NEXT_PUBLIC_ETHERSCAN_TRASACTION_URL}${transaction.hash}`}
                 >
                   {transaction.hash} 
                 </a>

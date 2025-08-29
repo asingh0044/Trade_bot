@@ -89,7 +89,7 @@ const Page = () => {
           </Button>
 
           {hash && (
-            <a target="_blank" href={`https://sepolia.etherscan.io/tx/${hash}`}>
+            <a target="_blank" href={`${process.env.NEXT_PUBLIC_ETHERSCAN_TRASACTION_URL}${hash}`}>
               <Button variant="link">Transaction Details</Button>
             </a>
           )}

@@ -9,7 +9,6 @@ import { useAccount } from "wagmi";
 import { useDripToken } from "@/hooks/useDripToken";
 const Page = () => {
   const [captchStatus, setCaptchaStatus] = useState<boolean>(false);
-  const CAPTCHA_SITE_KEY = "6LfUALMrAAAAACN20GYTd9sW49WD5fiokprAq0S0";
   const { address } = useAccount();
   const { isPending, mutate } = useDripToken();
   const getTokenHandler = () => {
@@ -64,7 +63,7 @@ const Page = () => {
 
         {!captchStatus && (
           <ReCAPTCHA
-            sitekey={CAPTCHA_SITE_KEY!}
+            sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY!}
             onChange={changeCaptchaStatus}
           />
         )}
