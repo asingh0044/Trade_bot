@@ -5,6 +5,7 @@ export const useWalletTokens = (address?: `0x${string}`) => {
   return useQuery({
     queryKey: ["walletTokens", address],
     queryFn: () => getWalletTokens(address!),
-    enabled:!!address
+    enabled: !!address,
+    gcTime: 1000 * 60 * 60,
   });
 };
