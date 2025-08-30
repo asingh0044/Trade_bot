@@ -13,6 +13,8 @@ type Card2props = {
     quoteData: string | null;
     isLoading: boolean;
     isFetching: boolean;
+    isTokenLoading:boolean;
+    isTokenFetching:boolean
   };
 };
 export const Card2 = ({ props }: Card2props) => {
@@ -25,6 +27,8 @@ export const Card2 = ({ props }: Card2props) => {
     quoteData,
     isLoading,
     isFetching,
+    isTokenFetching,
+    isTokenLoading
   } = props;
   return (
     <div className="w-full bg-white p-8 rounded-md">
@@ -36,6 +40,8 @@ export const Card2 = ({ props }: Card2props) => {
               tokenIndex: token2Index,
               data: updatedTokens,
               setTokenIndex: setToken2Index,
+              isFetching:isTokenFetching,
+              isLoading:isTokenLoading
             }}
           />
           {token2Index !== -1 && (

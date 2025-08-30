@@ -24,7 +24,7 @@ import { toast } from "sonner";
 const Page = () => {
   const [tokenIndex, setTokenIndex] = useState<number>(-1);
   const { address } = useAccount();
-  const { data, refetch } = useWalletTokens(address);
+  const { data, refetch, isFetching, isLoading } = useWalletTokens(address);
   const form = useForm<z.infer<typeof tokenFormSchema>>({
     resolver: zodResolver(tokenFormSchema),
     defaultValues: {
@@ -42,13 +42,13 @@ const Page = () => {
     if (!data) {
       return;
     }
-    const inputToken=getSwapTokens(data[tokenIndex].contractAddress);
-    if(!inputToken){
+    const inputToken = getSwapTokens(data[tokenIndex].contractAddress);
+    if (!inputToken) {
       return;
     }
     const res = await mutation.mutateAsync(
       {
-        inputToken:inputToken ,
+        inputToken: inputToken,
         toAddress: values.address,
         amount: values.amount,
       },
@@ -85,6 +85,8 @@ const Page = () => {
                       data,
                       setTokenIndex,
                       field,
+                      isFetching,
+                      isLoading,
                     }}
                   />
                 </FormControl>

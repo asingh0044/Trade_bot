@@ -25,9 +25,12 @@ const Page = () => {
   const { data: walletBalance, refetch: refetchEThBalance } = useBalance({
     address,
   });
-  const { data: walletTokens, refetch: refetchTokens } = useWalletTokens(
-    address!
-  );
+  const {
+    data: walletTokens,
+    refetch: refetchTokens,
+    isFetching: isTokensFetching,
+    isLoading: isTokensLoading,
+  } = useWalletTokens(address!);
   let updatedTokens = walletTokens;
   if (walletTokens && walletBalance) {
     updatedTokens = addSepoliaETH(updatedTokens!, walletBalance.formatted);
@@ -133,6 +136,8 @@ const Page = () => {
             setToken1Index: setToken1Index,
             asset1: asset1,
             setAsset1: setAsset1,
+            isFetching: isTokensFetching,
+            isLoading: isTokensLoading,
           }}
         />
         <Card2
@@ -145,6 +150,8 @@ const Page = () => {
             quoteData: quoteData!,
             isLoading: isLoading,
             isFetching: isFetching,
+            isTokenFetching: isTokensFetching,
+            isTokenLoading: isTokensLoading,
           }}
         />
 

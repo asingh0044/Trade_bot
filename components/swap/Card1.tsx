@@ -7,10 +7,12 @@ type Card1props = {
     setToken1Index: (index: number) => void;
     asset1: string;
     setAsset1: (asset: string) => void;
+    isLoading:boolean;
+    isFetching:boolean
   };
 };
 export const Card1 = ({ props }: Card1props) => {
-  const { token1Index, updatedTokens, setToken1Index, asset1, setAsset1 } =
+  const { token1Index, updatedTokens, setToken1Index, asset1, setAsset1 , isLoading , isFetching } =
     props;
 
   return (
@@ -23,6 +25,8 @@ export const Card1 = ({ props }: Card1props) => {
               tokenIndex: token1Index,
               data: updatedTokens,
               setTokenIndex: setToken1Index,
+              isFetching,
+              isLoading
             }}
           />
           {token1Index !== -1 && (
