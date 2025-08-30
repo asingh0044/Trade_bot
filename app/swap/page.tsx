@@ -1,12 +1,10 @@
 "use client";
-import { Card1 } from "@/components/swap/Card1";
-import { Card2 } from "@/components/swap/Card2";
-import { Button } from "@/components/ui/button";
+import { SwapPage } from "@/components/swap/SwapPage";
 import { useGetQuote } from "@/hooks/useGetQuote";
 import { useGetSwap } from "@/hooks/useGetSwap";
 import { useWalletTokens } from "@/hooks/useWalletTokens";
 import { useWrap } from "@/hooks/useWrap";
-import { ETH_ADDRESS, WETH_ADDRESS } from "@/lib/constant";
+import { ETH_ADDRESS } from "@/lib/constant";
 import { getSwapTokens } from "@/services/getSwapTokens";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
 import { addSepoliaETH } from "@/services/UpdatedTokens";
@@ -128,69 +126,26 @@ const Page = () => {
   };
   return (
     <div className="w-full h-[calc(100vh-6rem)] flex items-center justify-center">
-      <div className="space-y-8 w-11/12 relative md:w-3/4 lg:w-[600px] py-6 px-4 lg:py-12 lg:px-8 rounded-md shadowm-sm">
-        <Card1
-          props={{
-            token1Index: token1Index,
-            updatedTokens: updatedTokens!,
-            setToken1Index: setToken1Index,
-            asset1: asset1,
-            setAsset1: setAsset1,
-            isFetching: isTokensFetching,
-            isLoading: isTokensLoading,
-          }}
-        />
-        <Card2
-          props={{
-            token1Index: token1Index,
-            token2Index: token2Index,
-            updatedTokens: updatedTokens!,
-            setToken2Index: setToken2Index,
-            asset1: asset1,
-            quoteData: quoteData!,
-            isLoading: isLoading,
-            isFetching: isFetching,
-            isTokenFetching: isTokensFetching,
-            isTokenLoading: isTokensLoading,
-          }}
-        />
-
-        {(updatedTokens?.[token1Index]?.contractAddress.toLowerCase() ===
-          ETH_ADDRESS.toLowerCase() &&
-          updatedTokens?.[token2Index]?.contractAddress.toLowerCase() ===
-            WETH_ADDRESS.toLowerCase()) ||
-        (updatedTokens?.[token1Index]?.contractAddress.toLowerCase() ===
-          WETH_ADDRESS.toLowerCase() &&
-          updatedTokens?.[token2Index]?.contractAddress.toLowerCase() ===
-            ETH_ADDRESS.toLowerCase()) ? (
-          <Button
-            onClick={wrapHandler}
-            disabled={asset1.length <= 0}
-            className="w-full py-4 cursor-pointer"
-          >
-            {wrapPending ? (
-              "Loading..."
-            ) : (
-              <span>
-                {updatedTokens?.[token1Index].contractAddress.toLowerCase() ===
-                WETH_ADDRESS.toLowerCase()
-                  ? "Unwrap"
-                  : "Wrap"}
-              </span>
-            )}
-          </Button>
-        ) : (
-          <Button
-            onClick={swapHandler}
-            disabled={
-              asset1.length <= 0 || token1Index === -1 || token2Index === -1
-            }
-            className="w-full py-4 cursor-pointer"
-          >
-            {isPending ? "Loading..." : "Swap"}
-          </Button>
-        )}
-      </div>
+      <SwapPage
+        props={{
+          token1Index: token1Index,
+          updatedTokens: updatedTokens ?? [],
+          setToken1Index: setToken1Index,
+          asset1: asset1,
+          setAsset1: setAsset1,
+          isLoading: isLoading,
+          isFetching: isFetching,
+          token2Index: token2Index,
+          setToken2Index: setToken2Index,
+          quoteData: quoteData ?? null,
+          isTokenLoading: isTokensLoading,
+          isTokenFetching: isTokensFetching,
+          isPending: isPending,
+          wrapHandler: wrapHandler,
+          wrapPending: wrapPending,
+          swapHandler: swapHandler,
+        }}
+      />
     </div>
   );
 };
