@@ -1,5 +1,5 @@
 import { getProvider } from "@/services/getProvider";
-import { ethers, providers } from "ethers";
+import {  providers } from "ethers";
 
 export const getSepoliaTransactions = async (): Promise<
   providers.TransactionResponse[]

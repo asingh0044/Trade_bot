@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "motion/react";
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
 
 export const BackgroundBeamsWithCollision = ({
   children,
@@ -69,10 +69,7 @@ export const BackgroundBeamsWithCollision = ({
   return (
     <div
       ref={parentRef}
-      className={cn(
-        "min-h-screen relative overflow-hidden",
-        className
-      )}
+      className={cn("min-h-screen relative overflow-hidden", className)}
     >
       {beams.map((beam) => (
         <CollisionMechanism
@@ -99,7 +96,7 @@ export const BackgroundBeamsWithCollision = ({
 const CollisionMechanism = React.forwardRef<
   HTMLDivElement,
   {
-    containerRef: React.RefObject<HTMLDivElement| null>;
+    containerRef: React.RefObject<HTMLDivElement | null>;
     parentRef: React.RefObject<HTMLDivElement | null>;
     beamOptions?: {
       initialX?: number;
@@ -113,7 +110,7 @@ const CollisionMechanism = React.forwardRef<
       repeatDelay?: number;
     };
   }
->(({ parentRef, containerRef, beamOptions = {} }) => {
+>(({ parentRef, containerRef, beamOptions = {} }, ref) => {
   const beamRef = useRef<HTMLDivElement>(null);
   const [collision, setCollision] = useState<{
     detected: boolean;
@@ -124,6 +121,7 @@ const CollisionMechanism = React.forwardRef<
   });
   const [beamKey, setBeamKey] = useState(0);
   const [cycleCollisionDetected, setCycleCollisionDetected] = useState(false);
+  useImperativeHandle(ref, () => beamRef.current as HTMLDivElement, []);
 
   useEffect(() => {
     const checkCollision = () => {

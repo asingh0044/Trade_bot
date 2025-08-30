@@ -1,6 +1,5 @@
 import { formatTokenBalance } from "@/lib/utils";
 import { Alchemy, Network, TokenBalanceType } from "alchemy-sdk";
-import { ethers } from "ethers";
 
 const alchemy = new Alchemy({
   apiKey: process.env.NEXT_PUBLIC_ALCHEMY_API_KEY!,
@@ -36,7 +35,7 @@ export async function getWalletTokens(address: `0x${string}`) {
     );
 
     return tokensWithMeta;
-  } catch (error:any) {
-    throw new Error(error?.message);
+  } catch (error) {
+    throw error;
   }
 }

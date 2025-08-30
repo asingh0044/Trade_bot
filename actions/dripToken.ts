@@ -1,6 +1,6 @@
 import { getSigner } from "@/services/getSigner";
 import CONTRACT_ABI from "../abi/faucetAbi.json";
-import { ethers, utils } from "ethers";
+import { ethers } from "ethers";
 const CONTRACT_ADDRESS = "0xb2cf1100013b925915de58d17393d2119b66b959";
 
 export const dripToken = async () => {

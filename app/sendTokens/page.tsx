@@ -46,7 +46,7 @@ const Page = () => {
     if (!inputToken) {
       return;
     }
-    const res = await mutation.mutateAsync(
+    await mutation.mutateAsync(
       {
         inputToken: inputToken,
         toAddress: values.address,

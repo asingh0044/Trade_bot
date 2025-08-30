@@ -45,7 +45,7 @@ export const getSingleSwap = async (CurrentConfig: SwapExactInSingle) => {
       await approveErc20Token(tokenInAddress, deadline);
     }
 
-    const txOptions: any = {};
+    const txOptions: ethers.PayableOverrides = {};
     if (tokenInAddress === ethers.constants.AddressZero) {
       txOptions.value = CurrentConfig.amountIn;
     }
@@ -57,7 +57,7 @@ export const getSingleSwap = async (CurrentConfig: SwapExactInSingle) => {
     );
     const receipt = await tx.wait();
     return receipt;
-  } catch (error: any) {
+  } catch (error) {
     throw error;
   }
 };

@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 import QUOTER_ABI from "../abi/quoterAbi.json";
 import { getProvider } from "@/services/getProvider";
-import { USDC_TOKEN } from "@/lib/constant";
 import { SwapExactInSingle } from "@uniswap/v4-sdk";
 import { Token } from "@uniswap/sdk-core";
 const QUOTER_CONTRACT_ADDRESS = "0x61B3f2011A92d183C7dbaDBdA940a7555Ccf9227";
@@ -31,7 +30,7 @@ export const getQuote = async (
       quotedAmountOut.amountOut,
       tokenOut.decimals
     );
-  } catch (error: any) {
+  } catch (error) {
     throw error;
   }
 };

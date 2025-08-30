@@ -19,7 +19,7 @@ export const wrapETH = async (amountInEth: string): Promise<boolean> => {
     await tx.wait();
 
     return true;
-  } catch (error:any) {
+  } catch (error) {
     throw error;
   }
 };
@@ -33,7 +33,7 @@ export const unwrapWETH = async (amountInWeth: string): Promise<boolean> => {
     await tx.wait();
 
     return true;
-  } catch (error:any) {
+  } catch (error) {
     throw error;
   }
 };
