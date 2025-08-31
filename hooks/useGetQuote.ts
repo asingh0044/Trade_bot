@@ -7,6 +7,6 @@ export const useGetQuote = (CurrentConfig: SwapExactInSingle | null , tokenOut:T
   return useQuery({
     queryKey: ["query"],
     queryFn: () => getQuote(CurrentConfig!,tokenOut!),
-    enabled: !!CurrentConfig && !tokenOut,
+    enabled: !!CurrentConfig && !!tokenOut,
   });
 };

@@ -18,7 +18,7 @@ import { useWalletTokens } from "@/hooks/useWalletTokens";
 import { useState } from "react";
 import { useSendToken } from "@/hooks/useSendToken";
 import { TokenDropdown } from "@/components/common/TokenDropdown";
-import { getSwapTokens } from "@/services/getSwapTokens";
+import { getToken } from "@/services/getSwapTokens";
 import { toast } from "sonner";
 
 const Page = () => {
@@ -36,13 +36,15 @@ const Page = () => {
   const mutation = useSendToken();
   async function onSubmit(values: z.infer<typeof tokenFormSchema>) {
     if (address?.toLowerCase() === values.address.toLowerCase()) {
-      toast.error("Please choose another wallet.");
-      return;
+      return toast.error("Please choose another wallet.");
     }
     if (!data) {
       return;
     }
-    const inputToken = getSwapTokens(data[tokenIndex].contractAddress);
+    if (Number(data?.[tokenIndex]?.tokenBalance) < Number(values.amount)) {
+      return toast.error("Please choose lesser amount to send.");
+    }
+    const inputToken = getToken(data[tokenIndex]);
     if (!inputToken) {
       return;
     }
@@ -132,7 +134,8 @@ const Page = () => {
                   : "text-green-500"
               }`}
             >
-              Current Token Balance: {data?.[tokenIndex]?.tokenBalance}{" "}
+              Current Token Balance:{" "}
+              {Number(data?.[tokenIndex]?.tokenBalance).toFixed(2)}{" "}
               {data?.[tokenIndex]?.symbol}
             </div>
           )}
@@ -143,14 +146,6 @@ const Page = () => {
           >
             {mutation.isPending ? "Loading..." : "Send"}
           </Button>
-          {mutation.isSuccess && !mutation.isError && (
-            <div className="mt-2 text-sm text-green-500">
-              Transaction successful.
-            </div>
-          )}
-          {mutation.isError && (
-            <div className="mt-2 text-sm text-red-500">Transaction failed.</div>
-          )}
         </form>
       </Form>
     </div>

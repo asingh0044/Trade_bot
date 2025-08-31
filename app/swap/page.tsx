@@ -5,7 +5,7 @@ import { useGetSwap } from "@/hooks/useGetSwap";
 import { useWalletTokens } from "@/hooks/useWalletTokens";
 import { useWrap } from "@/hooks/useWrap";
 import { ETH_ADDRESS } from "@/lib/constant";
-import { getSwapTokens } from "@/services/getSwapTokens";
+import { getToken } from "@/services/getSwapTokens";
 import { getUniswapConfig } from "@/services/getUniswapConfig";
 import { addSepoliaETH } from "@/services/UpdatedTokens";
 import { SwapExactInSingle } from "@uniswap/v4-sdk";
@@ -42,7 +42,7 @@ const Page = () => {
   } = useGetQuote(
     config,
     token2Index !== -1 && updatedTokens
-      ? getSwapTokens(updatedTokens[token2Index].contractAddress)
+      ? getToken(updatedTokens[token2Index]) ?? null
       : null
   );
 
@@ -54,11 +54,11 @@ const Page = () => {
       token1Index !== token2Index
     ) {
       const config = getUniswapConfig(
-        updatedTokens && token1Index !== -1
-          ? getSwapTokens(updatedTokens[token1Index].contractAddress)
+        token1Index !== -1 && updatedTokens
+          ? getToken(updatedTokens[token1Index]) ?? null
           : null,
-        updatedTokens && token2Index !== -1
-          ? getSwapTokens(updatedTokens[token2Index].contractAddress)
+        token2Index !== -1 && updatedTokens
+          ? getToken(updatedTokens[token2Index]) ?? null
           : null,
         asset1
       );
@@ -93,9 +93,10 @@ const Page = () => {
   const { mutate: mutateWrap, isPending: wrapPending } = useWrap();
   const wrapHandler = () => {
     if (!token1Index || !token2Index || !updatedTokens) return;
-    const inputToken = getSwapTokens(
-      updatedTokens[token1Index].contractAddress
-    );
+    const inputToken = getToken(updatedTokens[token1Index]);
+    if (!inputToken) {
+      return;
+    }
     mutateWrap(
       { inputToken, amount: asset1 },
       {

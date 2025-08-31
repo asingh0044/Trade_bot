@@ -7,7 +7,6 @@ export const sendTokens = async (
   toAddress: string,
   amount: string
 ) => {
-  
   const signer = await getSigner();
 
   const tokenAbi = [
@@ -19,7 +18,10 @@ export const sendTokens = async (
     signer
   );
 
-  const numberOfTokens = ethers.utils.parseUnits(amount.toString(), inputToken.decimals);
+  const numberOfTokens = ethers.utils.parseUnits(
+    amount.toString(),
+    inputToken.decimals
+  );
 
   try {
     const tx = await tokenContract.transfer(toAddress, numberOfTokens);
