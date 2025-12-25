@@ -1,0 +1,155 @@
+"use client";
+import { useAccount } from "wagmi";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
+import { tokenFormSchema } from "@/lib/formSchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { useWalletTokens } from "@/hooks/useWalletTokens";
+import { useState } from "react";
+import { useSendToken } from "@/hooks/useSendToken";
+import { TokenDropdown } from "@/components/common/TokenDropdown";
+import { getToken } from "@/services/getSwapTokens";
+import { toast } from "sonner";
+
+const Page = () => {
+  const [tokenIndex, setTokenIndex] = useState<number>(-1);
+  const { address } = useAccount();
+  const { data, refetch, isFetching, isLoading } = useWalletTokens(address);
+  const form = useForm<z.infer<typeof tokenFormSchema>>({
+    resolver: zodResolver(tokenFormSchema),
+    defaultValues: {
+      address: "",
+      amount: "",
+      contractAddress: "",
+    },
+  });
+  const mutation = useSendToken();
+  async function onSubmit(values: z.infer<typeof tokenFormSchema>) {
+    if (address?.toLowerCase() === values.address.toLowerCase()) {
+      return toast.error("Please choose another wallet.");
+    }
+    if (!data) {
+      return;
+    }
+    if (Number(data?.[tokenIndex]?.tokenBalance) < Number(values.amount)) {
+      return toast.error("Please choose lesser amount to send.");
+    }
+    const inputToken = getToken(data[tokenIndex]);
+    if (!inputToken) {
+      return;
+    }
+    await mutation.mutateAsync(
+      {
+        inputToken: inputToken,
+        toAddress: values.address,
+        amount: values.amount,
+      },
+      {
+        onSuccess: () => {
+          refetch();
+          form.reset();
+          setTokenIndex(-1);
+          toast("Tokens Sent");
+        },
+        onError: () => {
+          toast.error("Please Try again Later");
+        },
+      }
+    );
+  }
+  return (
+    <div className="w-full h-[calc(100vh-6rem)] flex items-center justify-center">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-8 w-11/12 md:w-3/4 lg:w-[500px] bg-white py-6 px-4 lg:py-12 lg:px-8 rounded-md shadowm-sm"
+        >
+          <FormField
+            control={form.control}
+            name="contractAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select Token</FormLabel>
+                <FormControl>
+                  <TokenDropdown
+                    dropdownProps={{
+                      tokenIndex,
+                      data,
+                      setTokenIndex,
+                      field,
+                      isFetching,
+                      isLoading,
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="address"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Wallet Address</FormLabel>
+                <FormControl>
+                  <Input placeholder="0xabcd1234..." {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Transaction Amount</FormLabel>
+                <FormControl>
+                  <Input placeholder="0.05 ETH" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {tokenIndex >= 0 && (
+            <div
+              className={`${
+                Number(data?.[tokenIndex]?.tokenBalance) <
+                Number(form.watch("amount"))
+                  ? "text-red-500"
+                  : "text-green-500"
+              }`}
+            >
+              Current Token Balance:{" "}
+              {Number(data?.[tokenIndex]?.tokenBalance).toFixed(2)}{" "}
+              {data?.[tokenIndex]?.symbol}
+            </div>
+          )}
+          <Button
+            disabled={mutation.isPending}
+            className="cursor-pointer"
+            type="submit"
+          >
+            {mutation.isPending ? "Loading..." : "Send"}
+          </Button>
+        </form>
+      </Form>
+    </div>
+  );
+};
+
+export default Page;
